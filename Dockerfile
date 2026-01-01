@@ -26,7 +26,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progre
 RUN cp env .env
 
 # Set Apache document root to public folder
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
@@ -36,8 +36,11 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/writable
 
-# Expose port
-EXPOSE 80
+# Configure Apache to listen on PORT env variable (Railway sets this)
+RUN echo 'Listen ${PORT}\n<VirtualHost *:${PORT}>\n    DocumentRoot /var/www/html/public\n    <Directory /var/www/html/public>\n        AllowOverride All\n        Require all granted\n    </Directory>\n</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+
+# Remove default port 80
+RUN sed -i 's/Listen 80//' /etc/apache2/ports.conf
 
 # Start Apache
-CMD ["sh", "-c", "sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf && apache2-foreground"]
+CMD ["apache2-foreground"]
