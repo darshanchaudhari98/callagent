@@ -1,17 +1,15 @@
-FROM composer:2 AS composer
 FROM php:8.2-cli
 
-# Copy composer from composer image
-COPY --from=composer /usr/bin/composer /usr/bin/composer
-
-# Install system dependencies
+# Install system dependencies and composer
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     zip \
     unzip \
     libzip-dev \
-    && docker-php-ext-install zip \
+    libicu-dev \
+    && docker-php-ext-install zip intl \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
