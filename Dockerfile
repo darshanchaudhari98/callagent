@@ -21,6 +21,9 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
 
+# Create .env file for production
+RUN cp env .env
+
 # Expose port
 EXPOSE 8080
 
