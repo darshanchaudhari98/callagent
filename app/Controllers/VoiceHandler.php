@@ -88,14 +88,14 @@ class VoiceHandler extends Controller
         $xml .= '<Response>';
         
         if ($gather) {
-            $xml .= '<Gather action="' . $appUrl . '/calling-agent/' . $nextAction . '" method="POST" numDigits="1" timeout="10">';
-            $xml .= '<Say>' . htmlspecialchars($text) . '</Say>';
+            $xml .= '<Gather action="' . $appUrl . '/calling-agent/' . $nextAction . '" numDigits="1" timeout="10">';
+            $xml .= '<Say voice="woman" language="en-IN">' . htmlspecialchars($text) . '</Say>';
             $xml .= '</Gather>';
             // Fallback if no input
-            $xml .= '<Say>We did not receive any input. Goodbye.</Say>';
+            $xml .= '<Say voice="woman" language="en-IN">We did not receive any input. Goodbye.</Say>';
             $xml .= '<Hangup/>';
         } else {
-            $xml .= '<Say>' . htmlspecialchars($text) . '</Say>';
+            $xml .= '<Say voice="woman" language="en-IN">' . htmlspecialchars($text) . '</Say>';
             $xml .= '<Hangup/>';
         }
         

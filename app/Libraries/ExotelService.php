@@ -24,6 +24,7 @@ class ExotelService
      */
     public function makeCall(string $toNumber): array
     {
+        // Use Exotel's passthru applet for simple TTS
         $url = "{$this->baseUrl}/Calls/connect.json";
         
         $appUrl = getenv('APP_URL') ?: '';
@@ -39,9 +40,8 @@ class ExotelService
             // Use Exotel App created in dashboard
             $postData['Url'] = "http://my.exotel.com/{$this->sid}/exoml/start_voice/{$exotelAppId}";
         } elseif (!empty($appUrl) && strpos($appUrl, 'localhost') === false) {
-            // Use public webhook URL
+            // Use public webhook URL with User-Agent header bypass
             $postData['Url'] = $appUrl . '/calling-agent/voice-response';
-            $postData['StatusCallback'] = $appUrl . '/calling-agent/call-webhook';
         } else {
             throw new \Exception(
                 "Exotel requires a public URL for voice responses. " .

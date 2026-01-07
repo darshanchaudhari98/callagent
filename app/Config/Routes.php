@@ -11,9 +11,11 @@ $routes->get('/calling-agent', 'CallingAgent::index');
 // Calling Agent Routes
 $routes->group('calling-agent', function ($routes) {
     $routes->post('initiate', 'CallingAgent::initiateCall');
-    $routes->post('webhook', 'CallingAgent::callWebhook');
+    $routes->match(['get', 'post'], 'webhook', 'CallingAgent::callWebhook');
+    $routes->match(['get', 'post'], 'call-webhook', 'CallingAgent::callWebhook');
     $routes->post('voice-input', 'CallingAgent::handleVoiceInput');
     $routes->get('status/(:segment)', 'CallingAgent::getCallStatus/$1');
+    $routes->get('test-pitch', 'CallingAgent::testPitch');
     
     // Voice handler routes (for Exotel webhooks) - support both GET and POST
     $routes->match(['get', 'post'], 'voice-response', 'VoiceHandler::voiceResponse');

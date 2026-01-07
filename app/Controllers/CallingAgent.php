@@ -17,6 +17,27 @@ class CallingAgent extends Controller
     }
 
     /**
+     * Test OpenAI pitch (for debugging)
+     */
+    public function testPitch()
+    {
+        try {
+            $openai = new OpenAIService();
+            $greeting = $openai->getInitialGreeting();
+            
+            return $this->response->setJSON([
+                'success' => true,
+                'pitch' => $greeting
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
      * Initiate a call to a lead
      */
     public function initiateCall()
